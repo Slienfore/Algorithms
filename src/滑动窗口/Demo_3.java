@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
-//3-无重复字符的最长子串
+// 3-无重复字符的最长子串
 public class Demo_3 {
     public static void main(String[] args) {
         String s = "abcab/c]bb";
@@ -17,9 +17,9 @@ public class Demo_3 {
 
     }
 
-    //Demo_1：哈希表：
+    // Demo_1：哈希表：
     public static int lengthOfLongestSubstring_1(String s) {
-        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        HashMap<Character, Integer> map = new HashMap<>();
         int point = 0, result = 0;
         char[] chars = s.toCharArray();
         int length = chars.length;
