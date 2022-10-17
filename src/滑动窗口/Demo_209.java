@@ -1,7 +1,5 @@
 package 滑动窗口;
 
-import utils.uu;
-
 /**
  * @author Slienfore
  * @version 1.0
@@ -10,11 +8,12 @@ import utils.uu;
 //209-长度最小的子数组
 public class Demo_209 {
     public static void main(String[] args) {
-/*        int[] nums = {2, 3, 1, 2, 4, 3};
-        int tar = 7;*/
-        int[] nums = {1, 4, 4};
-        int tar = 4;
-        System.out.println(minSubArrayLen(tar, nums));
+        int[] nums = {2, 3, 1, 2, 4, 3};
+        int tar = 7;
+/*        int[] nums = {1, 4, 4};
+        int tar = 4;*/
+        System.out.println(minSubArrayLen1(tar, nums));
+        System.out.println(minSubArrayLen2(tar, nums));
     }
 
     /**
@@ -23,7 +22,7 @@ public class Demo_209 {
      * 内存消耗：41.2 MB, 在所有 Java 提交中击败了40.83%的用户<br>
      * 2022年04月08日  12:19:29
      */
-    public static int minSubArrayLen(int target, int[] nums) {
+    public static int minSubArrayLen1(int target, int[] nums) {
         int length = nums.length, min = Integer.MAX_VALUE;
 
         for (int left = 0, right = 0; right < length; ++right) {
@@ -38,4 +37,23 @@ public class Demo_209 {
 
         return min == Integer.MAX_VALUE ? 0 : min;
     }
+
+    public static int minSubArrayLen2(int target, int[] nums) {
+        int len = nums.length, min = len + 1;
+
+        for (int sum = 0,// 累加和
+             ll = 0, rr = 0; rr < len; ++rr) {
+
+            sum += nums[rr];
+
+            while (sum >= target) {// 搜索最短子数组
+                min = Math.min(min, rr - ll + 1);// 若放在外面, 此时 sum < target 不符合条件
+                sum -= nums[ll++];
+            }
+        }
+
+        // 判断是否匹配到子数组
+        return min == (len + 1) ? 0 : min;
+    }
+
 }
