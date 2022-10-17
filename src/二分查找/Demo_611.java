@@ -21,20 +21,27 @@ public class Demo_611 {
 
         System.out.println(triangleNumber_1(nums));
         System.out.println(triangleNumber_2(nums));
+        System.out.println(triangleNumber_4(nums));
     }
 
+    /**
+     * 滑动窗口<br>
+     * 执行用时：27 ms, 在所有 Java 提交中击败了98.77%的用户<br>
+     * 内存消耗：40.9 MB, 在所有 Java 提交中击败了82.37%的用户<br>
+     * 2022年10月17日  22:26:02
+     */
     public static int triangleNumber_4(int[] nums) {
         int length = nums.length;
         if (length < 3) return 0;
 
-        Arrays.sort(nums);//维持单调性
+        Arrays.sort(nums);// 维持单调性
         int res = 0;
 
         for (int cur = 2; cur < length; ++cur) {
 
-            for (int left = 0, right = cur - 1; left < right; --right) {//较大值每次移动依次
+            for (int left = 0, right = cur - 1; left < right; --right) {// 较大值每次移动依次
 
-                //说明两边之和不满足(次大值向右递增，寻找满足条件的边)
+                // 说明两边之和不满足(次大值向右递增, 搜索能够满足两边之和大于第三边的范围)
                 while (left < right && nums[left] + nums[right] <= nums[cur]) ++left;
 
                 res += right - left;
@@ -75,7 +82,7 @@ public class Demo_611 {
                     }
                 }
 
-                res += left - b - 1;
+                res += left - b - 1;// 搜索第一大, 所以需要排除不符合条件的
             }
         }
         return res;
