@@ -1,5 +1,7 @@
 package 数位DP;
 
+import java.util.Arrays;
+
 /**
  * @author Slienfore
  * @version 1.0
@@ -9,13 +11,62 @@ package 数位DP;
 public class Demo_233 {
     public static void main(String[] args) {
         // int tar = 13;
-        // int tar = 0;
-        int tar = 10;
+        //int tar = 0;
+        // int tar = 10;
+        int tar = 13;
         // int tar = 824883294;
+        System.out.println(countDigitOne4(tar));
         System.out.println(countDigitOne3(tar));
 
         System.out.println(countDigitOne1(tar));
         System.out.println(countDigitOne2(tar));
+    }
+
+    private static char[] chars;// 切割字符串
+    private static int[][] dp;// 当前位置之前包含 cnt 个 1, 组合形成的数字个数(自顶向下递推)
+
+    /**
+     * 数位DP+记忆化搜索<br>
+     * 执行用时：0 ms, 在所有 Java 提交中击败了100.00%的用户<br>
+     * 内存消耗：38 MB, 在所有 Java 提交中击败了95.37%的用户<br>
+     * 2022年10月18日  21:35:41
+     */
+    public static int countDigitOne4(int tar) {
+        // 转换成为字符串
+        chars = String.valueOf(tar).toCharArray();
+
+        // 自左向右遍历的位, 不会超过数字的长度
+        dp = new int[chars.length][chars.length];
+
+        // 初始化记忆化
+        for (int[] tmp : dp) Arrays.fill(tmp, -1);
+
+        return dfs(0,
+                0,// 根据前面有多少个 1, 获取后面重复子状态
+                true);
+    }
+
+    private static int dfs(int idx, int cnt, boolean limit) {
+        // 扫描到最后一个数字
+        if (idx == chars.length) return cnt;
+
+        // 需要添加约束条件 => 只有没有受到限制的时候, 才能够填入,
+        // limit 表示当前是否受到了 n 的约束。若为真，则第 i 位填入的数字至多为 s[i]s[i], 否则可以是 9
+        // 如果在受到约束的情况下填了 s[i]s[i], 那么后续填入的数字仍会受到 nn 的约束
+        if (!limit && dp[idx][cnt] > 0) return dp[idx][cnt];
+
+        int res = 0;
+        for (int ceiling = limit ? chars[idx] - '0' : 9,// 受限 => 最高位 只能是 当前位数最高位
+             num = 0; num <= ceiling; ++num) {// 遍历当前位数能够取值的所有数字
+
+            res += dfs(idx + 1,// 统计下一个位置
+                    cnt + (num == 1 ? 1 : 0),// 当前位为 1 时, 才会统计当前位数上 1 的个数
+                    limit && num == ceiling);// 只有高位首先, 而且当前位置达到最高位时候 => 受限
+        }
+
+        if (!limit) dp[idx][cnt] = res;
+
+        return res;
     }
 
     /**
