@@ -11,11 +11,53 @@ import java.util.Comparator;
 // 2008-出租车的最大盈利
 public class Demo_2008 {
     public static void main(String[] args) {
-/*        int n = 5;
-        int[][] rides = {{2, 5, 4}, {1, 5, 1}};*/
-        int n = 20;
-        int[][] rides = {{1, 6, 1}, {3, 10, 2}, {10, 12, 3}, {11, 12, 2}, {12, 15, 2}, {13, 18, 1}};
+        int n = 5;
+        int[][] rides = {{2, 5, 4}, {1, 5, 1}};
+/*        int n = 20;
+        int[][] rides = {{1, 6, 1}, {3, 10, 2}, {10, 12, 3}, {11, 12, 2}, {12, 15, 2}, {13, 18, 1}};*/
         System.out.println(maxTaxiEarnings1(n, rides));
+        System.out.println(maxTaxiEarnings2(n, rides));
+    }
+
+    /**
+     * 动规+二分
+     * <br>
+     * 执行用时：87 ms, 在所有 Java 提交中击败了23.95%的用户<br>
+     * 内存消耗：65.2 MB, 在所有 Java 提交中击败了11.34%的用户<br>
+     * 2022年10月23日  11:33:32
+     */
+    public static long maxTaxiEarnings2(int n, int[][] rides) {
+        int len = rides.length;
+
+        // 终点由近及远
+        Arrays.sort(rides, Comparator.comparingInt(o -> o[1]));
+
+        // 送该乘客是否会获得的最大利润
+        long[] dp = new long[len + 1];
+
+        for (int cur = 1; cur <= len; ++cur) {// 遍历所有乘客
+            // 当前乘客信息
+            int orin = rides[cur - 1][0],
+                    end = rides[cur - 1][1], tip = rides[cur - 1][2];
+
+            // 搜索 当前乘客出发点 之前 送达 (最近) 终点乘客 => 连续送客
+            int ll = 0, rr = cur - 1;
+
+            while (ll < rr) {
+                int mid = ll + (rr - ll + 1) / 2;
+
+                if (rides[mid - 1][1] <= orin)// 搜寻最近送达乘客
+                    ll = mid;
+                else
+                    rr = mid - 1;// 上个乘客到达位置 超过 当前乘客的起点 => 收缩
+            }
+
+            // 送上个乘客 与 送当前乘客 获得的利润是否最大
+            dp[cur] = Math.max(dp[cur - 1],// 如果利润小, 就不送当前乘客
+                    dp[ll] + ((end - orin) + tip));
+        }
+
+        return dp[len];
     }
 
     /**
